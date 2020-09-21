@@ -1,0 +1,14 @@
+﻿  Cleaning remote project directory
+  Validating sources
+  Copying sources remotely to 'eceUbuntu.uwaterloo.ca'
+  Validating architecture
+  Validating architecture
+  Starting remote build
+  Compiling sources:
+  Polynomial.cpp
+C:\Users\bosco\Downloads\Polynomial.cpp(328,2): warning : no return statement in function returning non-void [-Wreturn-type]
+C:\Users\bosco\Downloads\Polynomial.cpp(328,2): warning :   }
+C:\Users\bosco\Downloads\Polynomial.cpp(328,2): warning :   ^
+  polynomialtest.cpp
+  Linking objects
+  P0.vcxproj -> C:\Users\bosco\source\repos\p0\P0\P0\bin\x64\Debug\P0.out

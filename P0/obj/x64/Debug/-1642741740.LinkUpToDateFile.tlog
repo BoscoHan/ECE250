@@ -1,0 +1,1 @@
+g++ -o "/home/y95han/projects/P0/source/repos/p0/P0/P0/bin/x64/Debug/P0.out" -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack /home/y95han/projects/P0/source/repos/p0/P0/P0/obj/x64/Debug/Polynomial.o /home/y95han/projects/P0/source/repos/p0/P0/P0/obj/x64/Debug/polynomialtest.o
