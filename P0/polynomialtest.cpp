@@ -9,15 +9,40 @@
     Version 1.0  - 17/12/2019
 */
 
-#include <iostream>
 using namespace std;
+
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <iterator>
 
 #include "Polynomial.h" // Class to represent polynomials
 
+void processString(std::string const& cmd);
+void processCoeff(std::string const& cmd);
+std::vector<std::string> split(const std::string &str, char delim);
+
+const std::string coeff_p1 = "coeff_p1";
+const std::string coeff_p2 = "coeff_p2";
+
 int main()
 {
-	
-	    double p1_array[] = {0.0, 1.0, 3.0};
+		string cmdline;
+
+		getline(cin, cmdline);
+		cout << cmdline << endl; 	
+		processString(cmdline);
+
+		while (! cin.eof()) {
+			if (cmdline == "exit") break;
+			getline(cin, cmdline);
+
+			//cout << cmdline << endl; 
+		}
+		
+
+	  /*   double p1_array[] = {0.0, 1.0, 3.0};
 		Polynomial p1(3,p1_array); // 3 -terms - 0 + X + 3X**2
 		cout << "p1: " << endl; 
 		p1.print();
@@ -52,7 +77,7 @@ int main()
 		p5 = p1 + p2;
 		cout << "p5 = p1 + p2: " << endl ;
 		p5.print();
-		cout << endl; 
+		cout << endl;  */
 
 		/*
 		Add here your code to test other methods you implement
@@ -62,11 +87,59 @@ int main()
 		- derivative (returns the polynomial representing the derivative)
 		- diff (you could alternatively overraide "-" )
 		- mult  (you could alternatively overraide "*" )
-
-
 		*/
 
 
 		return 0;
+}
 
+
+void processString(std::string const& currCmd) {
+	//if curr line contains coeff_p1
+	if (currCmd.find(coeff_p1) != std::string::npos) {
+		cout << "coeff_p1 found! ------------" << endl;
+
+		processCoeff(currCmd);
+	}
+}
+
+void processCoeff(std::string const& cmdLn) {
+	vector<string> splited = split(cmdLn, ';'); 
+
+	vector<string> cmdPair = split(splited.at(0), ' '); 
+	string cmd = cmdPair.at(0); 
+	int size = std::stoi(cmdPair.at(1));
+	
+	vector<double> coeffList(size);
+	for (int i = 1; i < splited.size(); i++) {
+
+		//rm first whitespace
+		auto pos = splited.at(i).find_first_not_of(' ');
+		auto Trimmed = splited.at(i).substr(pos != std::string::npos ? pos : 0);
+
+		coeffList.at(i-1) = stod(split(Trimmed, ' ').at(1));
+	}
+
+	for (int i=0; i<coeffList.size(); i++) {
+		cout << coeffList.at(i) << endl;
+	}
+
+	Polynomial p1(size, &coeffList[0]);
+}
+
+std::vector<std::string> split(const std::string &str, char delim) {
+	vector<string> result;
+	stringstream s_stream(str); //create string stream from the string
+
+	while(s_stream.good()) {
+		string substr;
+		getline(s_stream, substr, delim); //get first string delimitted
+		result.push_back(substr);
+	}
+
+/* 	for (int i = 0; i < result.size(); i++) {
+		cout << result.at(i) << endl;
+	} */
+
+	return result;
 }

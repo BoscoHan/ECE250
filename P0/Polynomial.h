@@ -21,6 +21,7 @@ class Polynomial {
 	int size ;  // degree + 1
 
 
+
     // class functions
     public:
     Polynomial (const int& size_p, const double coeff_p[]);
