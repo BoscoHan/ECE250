@@ -22,6 +22,7 @@ using namespace std;
 #include "Polynomial.h"
 
 #include <algorithm>
+
 /**
 initializes current polynomial object with values in given array 
 
@@ -32,18 +33,16 @@ coeff_p[] double(in) - array with coefficients ie.{1.0,3.5,4.3} - corresponding 
 
 */
 
+
 Polynomial::Polynomial (const int& size_p, const double coeff_p[]) {
  	size= size_p;
     coeff = new double[size];
     
-
     for(int i = 0; i < size_p; i++){
     		coeff[i] = coeff_p[i];
 
 	}
-
  }
-
 
 
 /**
@@ -52,7 +51,6 @@ initializes current polynomial object to 0 (empty polynomial)
  Polynomial::Polynomial() {
  	coeff = 0;
  	size = 0;
-
  }
 
 
@@ -63,9 +61,9 @@ Polynomial::Polynomial (const Polynomial &polynomial_to_copy){
 	this->size = polynomial_to_copy.size ;
 	coeff = new double[size];
 
-
 	for(int i = 0; i < size; i++){
-    	this->coeff[i] =  polynomial_to_copy.coeff[i] ;
+    	this->coeff[i] =  polynomial_to_copy.coeff[i];
+		list1Head.addnode(polynomial_to_copy.coeff[i]);
 	}
 
 }

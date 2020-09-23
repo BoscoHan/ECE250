@@ -9,6 +9,8 @@
 */
 
 #include <iostream>
+#include "linkedlist.cpp"
+
 using namespace std;
 
 // Polynomial for single variable X
@@ -19,11 +21,11 @@ class Polynomial {
 	private:
 	double    *coeff;  // coefficients
 	int size ;  // degree + 1
-
-
+    
 
     // class functions
     public:
+    linkedlist list1Head;
     Polynomial (const int& size_p, const double coeff_p[]);
     Polynomial();
     ~Polynomial();

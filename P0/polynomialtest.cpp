@@ -98,9 +98,12 @@ void processString(std::string const& currCmd) {
 	//if curr line contains coeff_p1
 	if (currCmd.find(coeff_p1) != std::string::npos) {
 		cout << "coeff_p1 found! ------------" << endl;
-
+		processCoeff(currCmd);
+	} else if (currCmd.find(coeff_p2) != std::string::npos) {
+		cout << "coeff_p2 found! ------------" << endl;
 		processCoeff(currCmd);
 	}
+	
 }
 
 void processCoeff(std::string const& cmdLn) {
@@ -112,7 +115,6 @@ void processCoeff(std::string const& cmdLn) {
 	
 	vector<double> coeffList(size);
 	for (int i = 1; i < splited.size(); i++) {
-
 		//rm first whitespace
 		auto pos = splited.at(i).find_first_not_of(' ');
 		auto Trimmed = splited.at(i).substr(pos != std::string::npos ? pos : 0);
@@ -120,11 +122,16 @@ void processCoeff(std::string const& cmdLn) {
 		coeffList.at(i-1) = stod(split(Trimmed, ' ').at(1));
 	}
 
-	for (int i=0; i<coeffList.size(); i++) {
-		cout << coeffList.at(i) << endl;
-	}
+/* 	for (int i=0; i<coeffList.size(); i++) 
+		cout << coeffList.at(i) << endl; */
 
 	Polynomial p1(size, &coeffList[0]);
+	p1.print();
+
+
+	//create LL similarily:
+	linkedlist l1(size, &coeffList[0]);
+	l1.displayEntireList();
 }
 
 std::vector<std::string> split(const std::string &str, char delim) {
@@ -140,6 +147,5 @@ std::vector<std::string> split(const std::string &str, char delim) {
 /* 	for (int i = 0; i < result.size(); i++) {
 		cout << result.at(i) << endl;
 	} */
-
 	return result;
 }
