@@ -61,6 +61,7 @@ class linkedlist
         cout<< endl;
     }
 
+    //used for get
     void copyList(vector<double> &listCopy) {
         node * tempNode = new node;
         tempNode = head;
@@ -71,6 +72,28 @@ class linkedlist
         }
         return;
     }
+
+    void addList(vector<double> &resultList, vector<double> &p1List, vector<double> &p2List) {
+        int p1 = 0, p2 = 0;
+
+        while(p1List.size() > 0 || p2List.size() > 0) {
+            if (p1List.size() == 0) {
+                resultList.push_back(p2List.front());
+                p2List.erase (p2List.begin());
+
+            } else if (p2List.size() == 0) {
+                resultList.push_back(p1List.front());
+                p1List.erase (p1List.begin());
+
+            } else {
+                resultList.push_back(p2List.front() + p1List.front());
+                p1List.erase (p1List.begin());
+                p2List.erase (p2List.begin());
+            }
+        }
+        return;
+    }
+    
 
     void delete_last()
     {

@@ -22,12 +22,15 @@ using namespace std;
 void processString(std::string const& cmd);
 void processCoeff(std::string const& cmd);
 bool processGet(std::string const& cmdLn);
+bool processAdd(std::string const& cmdLn);
 std::vector<std::string> split(const std::string &str, char delim);
 
 const std::string coeff_p1 = "coeff_p1";
 const std::string coeff_p2 = "coeff_p2";
 const std::string getStr = "get"; 
+const std::string addStr = "add";
 
+const double EPSILON = 0.00000001;
 linkedlist *l1;
 linkedlist *l2;
 
@@ -36,7 +39,6 @@ int main()
 		string cmdline;
 
 		getline(cin, cmdline);
-		cout << cmdline << endl; 	
 		processString(cmdline);
 
 		while (! cin.eof()) {
@@ -103,16 +105,20 @@ int main()
 void processString(std::string const& currCmd) {
 	//if curr line contains coeff_p1
 	if (currCmd.find(coeff_p1) != std::string::npos) {
-		cout << "coeff_p1 found! ------------" << endl;
 		processCoeff(currCmd);
+		cout << "success" << endl;
 	} else if (currCmd.find(coeff_p2) != std::string::npos) {
-		cout << "coeff_p2 found! ------------" << endl;
 		processCoeff(currCmd);
+		cout << "success" << endl;
 	} else if (currCmd.find(getStr) != std::string::npos) {
-		auto getResult = processGet(currCmd) ? "true" : "false";
+		auto getResult = processGet(currCmd) ? "success" : "failure";
+		cout << getResult << endl;
+
+	} else if (currCmd.find(addStr) != std::string::npos) {
+		auto getResult = processAdd(currCmd) ? "success" : "failure";
 		cout << getResult << endl;
 	}
-	
+
 }
 
 
@@ -149,6 +155,47 @@ bool processGet(std::string const& cmdLn) {
 	return true;
 }
 
+bool processAdd(std::string const& cmdLn) {
+	vector<string> splited = split(cmdLn, ';'); 
+ 	vector<double> coeffList(splited.size());
+
+	for (int i = 0; i < splited.size(); i++) {
+		//rm first whitespace
+		auto pos = splited.at(i).find_first_not_of(' ');
+		auto Trimmed = splited.at(i).substr(pos != std::string::npos ? pos : 0);
+
+		//add have structure like this: get 0 14.0, we get the second element on first itr
+		if (i == 0) {
+			coeffList.at(i) = stod(split(Trimmed, ' ').at(2));			
+			continue;
+		}
+
+		coeffList.at(i) = stod(split(Trimmed, ' ').at(1));
+	} 
+
+	vector<double> p1List;
+	l1->copyList(p1List);
+
+	vector<double> p2List;
+	l2->copyList(p2List);
+
+	vector<double> resultList;
+	l1->addList(resultList, p1List, p2List);
+
+	if (coeffList.size() != resultList.size()) 
+		return false;
+
+	for (int i = 0; i < resultList.size(); i++) {
+
+		//comparing doubles abit tricky, since values aren't exact
+		if (abs(resultList.at(i) - coeffList.at(i)) > EPSILON)  {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 
 void processCoeff(std::string const& cmdLn) {
 	vector<string> splited = split(cmdLn, ';'); 
@@ -166,20 +213,14 @@ void processCoeff(std::string const& cmdLn) {
 		coeffList.at(i-1) = stod(split(Trimmed, ' ').at(1));
 	}
 
-/* 	for (int i=0; i<coeffList.size(); i++) 
-		cout << coeffList.at(i) << endl; */
-
-	//Polynomial p1(size, &coeffList[0]);
-	//p1.print();
-
 	if (cmd == coeff_p1) {
 		l1 = new linkedlist(size, &coeffList[0]);
-		l1->displayEntireList();
+		//l1->displayEntireList();
 	}
 
 	if (cmd == coeff_p2) {
 		l2 = new linkedlist(size, &coeffList[0]);
-		l2->displayEntireList();
+		//l2->displayEntireList();
 	}
 }
 
@@ -195,8 +236,5 @@ std::vector<std::string> split(const std::string &str, char delim) {
 		result.push_back(substr);
 	}
 
-/* 	for (int i = 0; i < result.size(); i++) {
-		cout << result.at(i) << endl;
-	} */
 	return result;
 }
