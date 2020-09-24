@@ -1,10 +1,9 @@
 #include <iostream>
-using namespace std;
 
 #include <math.h>
-using namespace std;
 
 #include <cmath>
+#include <vector>
 using namespace std;
 
 struct node {
@@ -53,13 +52,24 @@ class linkedlist
 
     void displayEntireList()
     {
-        node *temp=new node;
-        temp=head;
+        node *temp = new node;
+        temp = head;
         while(temp!=NULL) {
             cout<< temp->data <<" ";
             temp = temp->next;
         }
         cout<< endl;
+    }
+
+    void copyList(vector<double> &listCopy) {
+        node * tempNode = new node;
+        tempNode = head;
+
+        while(tempNode != NULL) {
+            listCopy.push_back(tempNode->data);
+            tempNode = tempNode->next;
+        }
+        return;
     }
 
     void delete_last()

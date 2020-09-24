@@ -21,10 +21,15 @@ using namespace std;
 
 void processString(std::string const& cmd);
 void processCoeff(std::string const& cmd);
+bool processGet(std::string const& cmdLn);
 std::vector<std::string> split(const std::string &str, char delim);
 
 const std::string coeff_p1 = "coeff_p1";
 const std::string coeff_p2 = "coeff_p2";
+const std::string getStr = "get"; 
+
+linkedlist *l1;
+linkedlist *l2;
 
 int main()
 {
@@ -38,7 +43,7 @@ int main()
 			if (cmdline == "exit") break;
 			getline(cin, cmdline);
 
-			//cout << cmdline << endl; 
+			processString(cmdline);
 		}
 		
 
@@ -89,7 +94,8 @@ int main()
 		- mult  (you could alternatively overraide "*" )
 		*/
 
-
+		delete l1;
+		delete l2;
 		return 0;
 }
 
@@ -102,9 +108,47 @@ void processString(std::string const& currCmd) {
 	} else if (currCmd.find(coeff_p2) != std::string::npos) {
 		cout << "coeff_p2 found! ------------" << endl;
 		processCoeff(currCmd);
+	} else if (currCmd.find(getStr) != std::string::npos) {
+		auto getResult = processGet(currCmd) ? "true" : "false";
+		cout << getResult << endl;
 	}
 	
 }
+
+
+bool processGet(std::string const& cmdLn) {
+	vector<string> splited = split(cmdLn, ';'); 
+	vector<double> coeffList(splited.size());
+	
+	for (int i = 0; i < splited.size(); i++) {
+		//rm first whitespace
+		auto pos = splited.at(i).find_first_not_of(' ');
+		auto Trimmed = splited.at(i).substr(pos != std::string::npos ? pos : 0);
+
+		//get have structure like this: get 0 14.0, we get the second element on first itr
+		if (i == 0) {
+			coeffList.at(i) = stod(split(Trimmed, ' ').at(2));			
+			continue;
+		}
+
+		coeffList.at(i) = stod(split(Trimmed, ' ').at(1));
+	}
+
+	//read the linkedList into a list, compare length of both and contents:
+	vector<double> listCopy;
+	l1->copyList(listCopy);
+
+	if (listCopy.size() != coeffList.size())
+		return false;
+
+	for (int i = 0; i < coeffList.size(); i++) {
+		if (coeffList.at(i) != listCopy.at(i))
+			return false;
+	}
+
+	return true;
+}
+
 
 void processCoeff(std::string const& cmdLn) {
 	vector<string> splited = split(cmdLn, ';'); 
@@ -125,14 +169,21 @@ void processCoeff(std::string const& cmdLn) {
 /* 	for (int i=0; i<coeffList.size(); i++) 
 		cout << coeffList.at(i) << endl; */
 
-	Polynomial p1(size, &coeffList[0]);
-	p1.print();
+	//Polynomial p1(size, &coeffList[0]);
+	//p1.print();
 
+	if (cmd == coeff_p1) {
+		l1 = new linkedlist(size, &coeffList[0]);
+		l1->displayEntireList();
+	}
 
-	//create LL similarily:
-	linkedlist l1(size, &coeffList[0]);
-	l1.displayEntireList();
+	if (cmd == coeff_p2) {
+		l2 = new linkedlist(size, &coeffList[0]);
+		l2->displayEntireList();
+	}
 }
+
+
 
 std::vector<std::string> split(const std::string &str, char delim) {
 	vector<string> result;
