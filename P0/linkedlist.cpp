@@ -74,7 +74,6 @@ class linkedlist
     }
 
     void addList(vector<double> &resultList, vector<double> &p1List, vector<double> &p2List) {
-        int p1 = 0, p2 = 0;
 
         while(p1List.size() > 0 || p2List.size() > 0) {
             if (p1List.size() == 0) {
@@ -94,6 +93,31 @@ class linkedlist
         return;
     }
     
+    void multList(vector<double> &resultList, vector<double> &p1List, vector<double> &p2List) {
+
+        resultList.resize(p1List.size() + p2List.size()-1, 0.0);
+
+        for (int i = 0; i < p1List.size(); i++) {
+            for (int j = 0; j < p2List.size(); j++) {
+                resultList[i+j] += p1List.at(i) * p2List.at(j);
+            }
+        }
+
+        return;
+    }
+
+    double evaluatePoly(const double x) {
+        node * tempNode = new node;
+        tempNode = head;
+        double ans = 0.0;
+        int power = 0;
+
+        while (tempNode != NULL) {
+            ans += (tempNode->data * (pow(x, power++)));
+            tempNode = tempNode->next;
+        }
+        return ans;
+    }
 
     void delete_last()
     {

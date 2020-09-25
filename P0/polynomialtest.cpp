@@ -17,18 +17,23 @@ using namespace std;
 #include <vector>
 #include <iterator>
 
+#include <string.h>
 #include "Polynomial.h" // Class to represent polynomials
 
 void processString(std::string const& cmd);
 void processCoeff(std::string const& cmd);
 bool processGet(std::string const& cmdLn);
 bool processAdd(std::string const& cmdLn);
+bool processMult(std::string const& cmdLn);
+bool processEval(std::string const& cmdLn);
 std::vector<std::string> split(const std::string &str, char delim);
 
 const std::string coeff_p1 = "coeff_p1";
 const std::string coeff_p2 = "coeff_p2";
 const std::string getStr = "get"; 
 const std::string addStr = "add";
+const std::string multStr = "mult";
+const std::string evalStr = "eval";
 
 const double EPSILON = 0.00000001;
 linkedlist *l1;
@@ -37,7 +42,6 @@ linkedlist *l2;
 int main()
 {
 		string cmdline;
-
 		getline(cin, cmdline);
 		processString(cmdline);
 
@@ -115,10 +119,15 @@ void processString(std::string const& currCmd) {
 		cout << getResult << endl;
 
 	} else if (currCmd.find(addStr) != std::string::npos) {
-		auto getResult = processAdd(currCmd) ? "success" : "failure";
-		cout << getResult << endl;
+		auto addResult = processAdd(currCmd) ? "success" : "failure";
+		cout << addResult << endl;
+	} else if (currCmd.find(multStr) != std::string::npos) {
+		auto multResult = processMult(currCmd) ? "success" : "failure";
+		cout << multResult << endl;
+	} else if (currCmd.find(evalStr) != std::string::npos) {
+		auto evalResult = processEval(currCmd) ? "success" : "failure";
+		cout << evalResult << endl;
 	}
-
 }
 
 
@@ -153,6 +162,20 @@ bool processGet(std::string const& cmdLn) {
 	}
 
 	return true;
+}
+
+bool processEval(std::string const& cmdLn) {
+	//split on space:
+	vector<string> splited = split(cmdLn, ' '); 
+	vector<double> coeffList(splited.size());
+
+	//double x = stod(coeffList.at(1));
+
+	double x = stod(splited.at(1));
+	double givenVal = stod(splited.at(2));
+
+	double ans = l1-> evaluatePoly(x);	
+	return abs(givenVal - ans) < EPSILON;
 }
 
 bool processAdd(std::string const& cmdLn) {
@@ -196,6 +219,46 @@ bool processAdd(std::string const& cmdLn) {
 	return true;
 }
 
+
+bool processMult(std::string const& cmdLn) {
+	vector<string> splited = split(cmdLn, ';'); 
+ 	vector<double> coeffList(splited.size());
+
+	for (int i = 0; i < splited.size(); i++) {
+		//rm first whitespace
+		auto pos = splited.at(i).find_first_not_of(' ');
+		auto Trimmed = splited.at(i).substr(pos != std::string::npos ? pos : 0);
+
+		//add have structure like this: get 0 14.0, we get the second element on first itr
+		if (i == 0) {
+			coeffList.at(i) = stod(split(Trimmed, ' ').at(2));			
+			continue;
+		}
+
+		coeffList.at(i) = stod(split(Trimmed, ' ').at(1));
+	} 
+
+	vector<double> p1List;
+	l1->copyList(p1List);
+
+	vector<double> p2List;
+	l2->copyList(p2List);
+
+	vector<double> resultList;
+	l1->multList(resultList, p1List, p2List);
+
+	if (coeffList.size() != resultList.size()) 
+		return false;
+
+	for (int i = 0; i < resultList.size(); i++) {
+
+		//comparing doubles abit tricky, since values aren't exact
+		if (abs(resultList.at(i) - coeffList.at(i)) > EPSILON)  {
+			return false;
+		}
+	}
+	return true;
+}
 
 void processCoeff(std::string const& cmdLn) {
 	vector<string> splited = split(cmdLn, ';'); 

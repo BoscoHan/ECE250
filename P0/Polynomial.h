@@ -21,7 +21,6 @@ class Polynomial {
 	private:
 	double    *coeff;  // coefficients
 	int size ;  // degree + 1
-    
 
     // class functions
     public:
