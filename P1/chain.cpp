@@ -12,6 +12,7 @@ class chain {
     public:
         chain(int size) {
             //chainVector.reserve(size);
+            vector<linkedlist>().swap(chainVector);
             chainVector = vector<linkedlist>(size);
         }
 
@@ -19,7 +20,7 @@ class chain {
             return chainVector.size();
         }
 
-        int primaryHash(int key) {
+        int primaryHash(long long int key) {
             return key % chainVector.size();
         }
 
@@ -56,5 +57,12 @@ class chain {
                 return false;
 
             return chainVector.at(slot).removeNode(key);
+        }
+
+        void printListInOrder(int slot) {
+            if (chainVector.at(slot).isEmpty()) {
+                return;
+            }
+            chainVector.at(slot).displayEntireSortedList();
         }
 };

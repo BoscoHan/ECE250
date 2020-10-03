@@ -1,7 +1,5 @@
 #include <iostream>
-
 #include <math.h>
-
 #include <cmath>
 #include <vector>
 using namespace std;
@@ -9,7 +7,6 @@ using namespace std;
 struct node {
     long long key;
     string value;
-
 	node *next;
 };	
 
@@ -27,7 +24,6 @@ class linkedlist
         linkedlist(long long key, string name) {
             head=NULL;
             tail=NULL;
-
             this -> addnode(key, name);
         }
 
@@ -37,7 +33,6 @@ class linkedlist
         tempNode -> key = _key; 
         tempNode -> value = name;
         tempNode -> next = NULL;
-
 
         //if head not null, append to tail:
         if (head != NULL) {
@@ -50,50 +45,61 @@ class linkedlist
         }
     }
 
-    void displayEntireList()
+    void displayEntireSortedList()
     {
         node *temp = new node;
         temp = head;
+        temp = sortList(temp);
+
         while(temp!=NULL) {
-            cout<< temp->key << ";";
-            cout<< temp->value << endl;
+            cout<< temp->key << " ";
             temp = temp->next;
         }
         cout<< endl;
     }
 
-    // //used for get
-    // void copyList(vector<double> &listCopy) {
-    //     node * tempNode = new node;
-    //     tempNode = head;
-
-    //     while(tempNode != NULL) {
-    //         listCopy.push_back(tempNode->data);
-    //         tempNode = tempNode->next;
-    //     }
-    //     return;
-    // }
-
-    void addList(vector<double> &resultList, vector<double> &p1List, vector<double> &p2List) {
-
-        while(p1List.size() > 0 || p2List.size() > 0) {
-            if (p1List.size() == 0) {
-                resultList.push_back(p2List.front());
-                p2List.erase (p2List.begin());
-
-            } else if (p2List.size() == 0) {
-                resultList.push_back(p1List.front());
-                p1List.erase (p1List.begin());
-
-            } else {
-                resultList.push_back(p2List.front() + p1List.front());
-                p1List.erase (p1List.begin());
-                p2List.erase (p2List.begin());
-            }
+    //sort linkedlist by its keys in place recursively using mergeSort and return the head reference: 
+    //time: O(NlogN), N = # of nodes, space: O(1)
+    node* sortList(node* head) {
+        if (head == NULL) return head;
+        if (head->next == NULL) return head;
+        
+        node *p1 = head;
+        node *p2 = head;
+        node *pre = head;
+        
+        //at each iteration, p1 moves one, p2 moves two 
+        //split the list in two halves, head points to beginning, p1 points to mid
+        while (p2!=NULL && p2->next!=NULL) {
+            pre = p1;
+            p1 = p1->next;
+            p2 = p2->next;
         }
-        return;
+        
+        pre->next = NULL;
+        
+        node *head1 = sortList(head);
+        node *head2 = sortList(p1);
+        
+        return mergeSort(head1, head2);
     }
-    
+
+    node* mergeSort (node *h1, node *h2) {
+        if (h1 == NULL) return h2;
+        if (h2 == NULL) return h1;
+        
+        if (h1->key < h2->key) {
+            h1->next = mergeSort(h1->next, h2);
+            return h1;
+        } else {
+            h2->next = mergeSort(h2->next, h1);
+            return h2;
+        }
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
 
     bool containsKey(long long key) {
         node *temp = new node;
@@ -122,8 +128,9 @@ class linkedlist
         temp = head;
 
         while (temp && temp->next) {
-            if (temp->next->key == _key) 
+            if (temp->next->key == _key) {
                 temp->next = temp->next->next;
+            }
              else 
                 temp = temp->next;           
         }

@@ -13,6 +13,7 @@ void processString(std::string const& cmd);
 void processInitialization(string const& currCmd);
 bool processInsertion(string const& currCmd);
 bool processDeletion(string const& currCmd);
+void processPrint(string const& currCmd);
 pair<int, string> processSearch(string const& currCmd);
 vector<string> split(const std::string &str, char delim);
 
@@ -34,7 +35,6 @@ int main()
 		while (! cin.eof()) {
 			if (cmdline == "exit") break;
 			getline(cin, cmdline);
-
 			processString(cmdline);
 		}
         return 0;
@@ -60,7 +60,7 @@ void processString(string const& currCmd) {
         cout << deleteResult << endl;
         
     } else if (first_token.find(print_str) != std::string::npos) {
-
+        processPrint(currCmd);
 
     } else if (first_token.find(search_str) != std::string::npos) {
         auto slot_name_pair = processSearch(currCmd);
@@ -70,8 +70,7 @@ void processString(string const& currCmd) {
          else 
             cout << "found " << slot_name_pair.second << " in " << slot_name_pair.first << endl;
         
-    } 
-
+    }
 }
 
 void processInitialization(string const& currCmd) {
@@ -89,6 +88,11 @@ pair<int, string> processSearch(string const& currCmd) {
     auto searchResult = _chain->search(stoll(cmdList.at(1)));
 
     return searchResult;
+}
+
+void processPrint(string const& currCmd) {
+    auto cmdList = split(currCmd, ' ');
+    _chain->printListInOrder(stoi(cmdList.at(1)));
 }
 
 bool processDeletion(string const& currCmd) {
