@@ -37,6 +37,7 @@ int main()
         getline(cin, cmdline);
         processString(cmdline);
     }
+    delete _chain;
     return 0;
 }
 
