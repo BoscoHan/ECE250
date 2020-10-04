@@ -28,16 +28,16 @@ chain *_chain;
 //Chaining
 int main()
 {
-		string cmdline;
-		getline(cin, cmdline);
-		processString(cmdline);
+    string cmdline;
+    getline(cin, cmdline);
+    processString(cmdline);
 
-		while (! cin.eof()) {
-			if (cmdline == "exit") break;
-			getline(cin, cmdline);
-			processString(cmdline);
-		}
-        return 0;
+    while (! cin.eof()) {
+        if (cmdline == "exit") break;
+        getline(cin, cmdline);
+        processString(cmdline);
+    }
+    return 0;
 }
 
 void processString(string const& currCmd) {
