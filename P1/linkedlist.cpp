@@ -20,6 +20,10 @@ class linkedlist
             head=NULL;
             tail=NULL;
         }
+        ~linkedlist() {
+            delete head;
+            delete tail;
+        }
 
         linkedlist(long long key, string name) {
             head=NULL;
