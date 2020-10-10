@@ -10,8 +10,8 @@ enum class status { empty, deleted, occupied };
 struct entry {
     long long key;
     string value;
-    status status;
-    entry (enum status st) : status(st) {}
+    status st;
+    entry (enum status s) : st(s) {}
 };	
 
 class openAddress {
@@ -46,7 +46,7 @@ class openAddress {
             int index = primaryHash(key);
             // cout<< "primary slot: " << index <<endl;
             // if collision occurs 
-            if (openVector.at(index).status == status::occupied) {
+            if (openVector.at(index).st == status::occupied) {
                 if (openVector.at(index).key == key) {
                     // cout << "BLOCKED INSERTING: "<< key << endl;
                     return false;
@@ -60,16 +60,16 @@ class openAddress {
                     int newIndex = (index + i * offset) % openVector.size(); 
                     // cout<< "attempting slot: " << newIndex <<endl;
 
-                    if (openVector.at(newIndex).status == status::occupied && openVector.at(newIndex).key == key) {
+                    if (openVector.at(newIndex).st == status::occupied && openVector.at(newIndex).key == key) {
                         // cout << "BLOCKED INSERTING: "<< key << endl;
                         return false;
                     }
 
                     //if collision resolved: 
-                    if (openVector[newIndex].status != status::occupied) { 
+                    if (openVector[newIndex].st != status::occupied) { 
                         openVector[newIndex].key = key; 
                         openVector[newIndex].value = value;
-                        openVector[newIndex].status = status::occupied;
+                        openVector[newIndex].st = status::occupied;
                         // cout<< "resolve collision, inserted in slot: " << newIndex <<endl;
                         break; 
                     }
@@ -79,7 +79,7 @@ class openAddress {
                 //no collision, simple insertion:
                 openVector[index].key = key;
                 openVector[index].value = value; 
-                openVector[index].status = status::occupied;              
+                openVector[index].st = status::occupied;              
             }
             curr_size++;    
             
@@ -93,13 +93,13 @@ class openAddress {
             int slot = (index1 + i * index2) % openVector.size();
 
             while (openVector[slot].key != key) {
-                if (openVector[slot].status == status::empty) {
+                if (openVector[slot].st == status::empty) {
                     return false; //doesn't exist
                 }
                 i++;
                 slot = (index1 + i * index2) % openVector.size();
             }           
-            openVector[slot].status = status::deleted;
+            openVector[slot].st = status::deleted;
             return true;
         }
 
@@ -113,14 +113,14 @@ class openAddress {
             int slot = (index1 + i * index2) % openVector.size();
 
             while (openVector[slot].key != key) { 
-                if (openVector[slot].status == status::empty) { 
+                if (openVector[slot].st == status::empty) { 
                     return make_pair(-1, nFound);
                 } 
                 i++; 
                 slot = (index1 + i * index2) % openVector.size();
             }
 
-            if (openVector[slot].status == status::deleted) {
+            if (openVector[slot].st == status::deleted) {
                 return make_pair(-1, nFound);
             }
 

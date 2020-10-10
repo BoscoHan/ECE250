@@ -37,7 +37,7 @@ int main()
         getline(cin, cmdline);
         processString(cmdline);
     }
-    delete _chain;
+    //delete _chain;
     return 0;
 }
 
@@ -81,12 +81,16 @@ void processInitialization(string const& currCmd) {
 
 bool processInsertion(string const& currCmd) {
     auto cmdList = split(currCmd, ';');
-    return (_chain->put(stoll(cmdList[0]), cmdList[1]));
+    long long int phoneNum = stoll(cmdList.at(0));
+    
+    return (_chain->put((long long) phoneNum, cmdList[1]));
 }
 
 pair<int, string> processSearch(string const& currCmd) {
     auto cmdList = split(currCmd, ' ');
-    auto searchResult = _chain->search(stoll(cmdList.at(1)));
+    long long int phoneNum = stoll(cmdList.at(1));
+
+    auto searchResult = _chain->search((long long) phoneNum);
 
     return searchResult;
 }
@@ -98,7 +102,8 @@ void processPrint(string const& currCmd) {
 
 bool processDeletion(string const& currCmd) {
     auto cmdList = split(currCmd, ' ');
-    return _chain->delete_by_key(stoll(cmdList.at(1)));
+    long long int phoneNum = stoll(cmdList.at(1));
+    return _chain->delete_by_key((long long) phoneNum);
 }
 
 vector<string> split(const std::string &str, char delim) {
