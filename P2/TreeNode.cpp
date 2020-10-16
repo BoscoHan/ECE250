@@ -13,72 +13,92 @@ class TreeNode {
         TreeNode *SE;  
 
     public:
-        TreeNode(CityInfo _info) : 
-            info(_info), NE(nullptr), NW(nullptr), SW(nullptr), SE(nullptr) {}
+    TreeNode(CityInfo _info) : 
+        info(_info), NE(nullptr), NW(nullptr), SW(nullptr), SE(nullptr) {}
 
-        TreeNode(CityInfo _info, TreeNode *_NE, TreeNode *_NW, TreeNode *_SW, TreeNode *_SE) : 
-            info(_info), NE(_NE), NW(_NW), SW(_SW), SE(_SE) {}
+    TreeNode(CityInfo _info, TreeNode *_NE, TreeNode *_NW, TreeNode *_SW, TreeNode *_SE) : 
+        info(_info), NE(_NE), NW(_NW), SW(_SW), SE(_SE) {}
 
-        void printAttributes(TreeNode *node) {
-            cout << node->info.name <<endl;
-            cout << node->info.longitude <<endl;
-            cout << node->info.latitude <<endl;
-            cout << node->info.population <<endl;
-            cout << node->info.costOfLiving <<endl;
-            cout << node->info.avgSalary <<endl;
-        }
+    void printAttributes(TreeNode *node) {
+        cout << node->info.name <<endl;
+        cout << node->info.longitude <<endl;
+        cout << node->info.latitude <<endl;
+        cout << node->info.population <<endl;
+        cout << node->info.costOfLiving <<endl;
+        cout << node->info.avgSalary <<endl;
+    }
 
         //lat = y, long = x
-        TreeNode* insertNode(TreeNode *root, CityInfo *info, bool foundDuplicates[]) {               
-            if (root == NULL) 
-                return new TreeNode(*info);
+    TreeNode* insertNode(TreeNode *root, CityInfo *info, bool foundDuplicates[]) {               
+        if (root == NULL) 
+            return new TreeNode(*info);
+        
+        if (root->info.latitude == info->latitude && root->info.longitude == info->longitude) 
+        {
+            foundDuplicates[0] = true;
+            return nullptr;
+        }
             
-            if (root->info.latitude == info->latitude && root->info.longitude == info->longitude) 
-            {
-                foundDuplicates[0] = true;
-                return nullptr;
-            }
-                
-            //insert to NE:
-            if (info->longitude > root->info.longitude && info->latitude > root->info.latitude) {
-                // cout << "NE" <<endl;
-                root->NE = insertNode(root->NE, info, foundDuplicates);
-            }
-
-            //insert to NW
-            if (info->longitude < root->info.longitude && info->latitude > root->info.latitude) {
-                // cout << "NW" <<endl;
-                root->NW = insertNode(root->NW, info, foundDuplicates);
-            }
-
-            //insert to SW
-            if (info->longitude < root->info.longitude && info->latitude < root->info.latitude) {
-                // cout << "SW" <<endl;
-                root->SW = insertNode(root->SW, info, foundDuplicates);
-            }
-
-            //insert to SE
-            if (info->longitude > root->info.longitude && info->latitude < root->info.latitude) {
-                // cout << "SE" <<endl;
-                root->SE = insertNode(root->SE, info, foundDuplicates);
-            }
-            
-            return root;
+        //insert to NE:
+        if (info->longitude > root->info.longitude && info->latitude > root->info.latitude) {
+            // cout << "NE" <<endl;
+            root->NE = insertNode(root->NE, info, foundDuplicates);
         }
 
-        int countNodes(TreeNode *root) {
-            if (root == nullptr) return 0;
-            return countNodes(root->NE) + countNodes(root->NW) + countNodes(root->SE) + countNodes(root->SW)+1;
+        //insert to NW
+        if (info->longitude < root->info.longitude && info->latitude > root->info.latitude) {
+            // cout << "NW" <<endl;
+            root->NW = insertNode(root->NW, info, foundDuplicates);
         }
 
-        void printInorder(TreeNode * root, vector<string> &list) {
-            if (root == nullptr) return;
-
-            printInorder(root->NE, list);
-            printInorder(root->NW, list);
-            list.push_back(root->info.name);
-            printInorder(root->SW, list);
-            printInorder(root->SE, list);
+        //insert to SW
+        if (info->longitude < root->info.longitude && info->latitude < root->info.latitude) {
+            // cout << "SW" <<endl;
+            root->SW = insertNode(root->SW, info, foundDuplicates);
         }
 
+        //insert to SE
+        if (info->longitude > root->info.longitude && info->latitude < root->info.latitude) {
+            // cout << "SE" <<endl;
+            root->SE = insertNode(root->SE, info, foundDuplicates);
+        }
+        
+        return root;
+    }
+
+    int countNodes(TreeNode *root) {
+        if (root == nullptr) return 0;
+        return countNodes(root->NE) + countNodes(root->NW) + countNodes(root->SE) + countNodes(root->SW)+1;
+    }
+
+    void printInorder(TreeNode * root, vector<string> &list) {
+        if (root == nullptr) return;
+
+        printInorder(root->NE, list);
+        printInorder(root->NW, list);
+        list.push_back(root->info.name);
+        printInorder(root->SW, list);
+        printInorder(root->SE, list);
+    }
+
+    string findInTree(TreeNode *root, double longitude, double latitude) {
+        if (root == nullptr) return "";
+
+        if (root->info.latitude == latitude && root->info.longitude == longitude) 
+            return root->info.name;
+        
+        if (longitude > root->info.longitude && latitude > root->info.latitude) 
+            return findInTree(root->NE, longitude, latitude);
+        
+        if (longitude < root->info.longitude && latitude > root->info.latitude) 
+            return findInTree(root->NW, longitude, latitude);
+        
+        if (longitude < root->info.longitude && latitude < root->info.latitude) 
+            return findInTree(root->SW, longitude, latitude);
+        
+        if (longitude > root->info.longitude && latitude < root->info.latitude) 
+            return findInTree(root->SE, longitude, latitude);
+        
+        return "";
+    }
 };

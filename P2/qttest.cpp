@@ -11,11 +11,13 @@ using namespace std;
 
 void processString(std::string const& cmd);
 bool processInsertion(string const& currCmd);
+void processSearch(string const& currCmd);
 vector<string> split(const std::string &str, char delim);
 
 const std::string insert_str = "i";
 const std::string size_str = "size";
 const std::string print_str = "print";
+const std::string search_str = "s";
 
 TreeNode *root;
 
@@ -46,16 +48,20 @@ void processString(string const& currCmd) {
 	} else if (first_token == size_str) {
         cout <<"tree size " << root->countNodes(root) << endl;
     } else if (first_token == print_str) {
+
         vector<string> list;
         root->printInorder(root, list);
-
         for (int i = 0; i < list.size(); i++) {
             cout <<list.at(i);
             if (i < list.size()-1)
                 cout << " ";
         }
         cout << endl;
-    }
+
+    } else if (first_token == search_str) {
+        string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
+        processSearch(cmdstr);
+    } 
 }
 
 
@@ -79,6 +85,16 @@ bool processInsertion(string const& currCmd) {
     root->insertNode(root, info, foundDuplciates);
     
     return !foundDuplciates[0]; //return true if no duplicates found  
+}
+
+void processSearch(string const& currCmd) {
+    auto cmdList = split(currCmd, ';');
+    auto searchResult = root->findInTree(root, stod(cmdList[0]), stod(cmdList[1]));    
+
+    if (searchResult == "")
+        cout<< "not found" << endl;
+    else
+        cout << "found " << searchResult << endl;
 }
 
 vector<string> split(const std::string &str, char delim) {
