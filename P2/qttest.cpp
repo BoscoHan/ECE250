@@ -5,7 +5,7 @@
 #include <vector>
 #include <iterator>
 #include <string.h>
-#include <tuple>
+#include <limits>
 #include "TreeNode.cpp"
 using namespace std;
 
@@ -13,6 +13,7 @@ void processString(std::string const& cmd);
 bool processInsertion(string const& currCmd);
 void processSearch(string const& currCmd);
 int processQ_MAX(string const& currCmd);
+int processQ_MIN(string const& currCmd);
 vector<string> split(const std::string &str, char delim);
 
 const std::string insert_str = "i";
@@ -20,6 +21,7 @@ const std::string size_str = "size";
 const std::string print_str = "print";
 const std::string search_str = "s";
 const std::string q_max_str = "q_max";
+const std::string q_min_str = "q_min";
 
 TreeNode *root;
 
@@ -40,7 +42,6 @@ int main()
 
 void processString(string const& currCmd) {
     if (currCmd == "exit") return;
-
     string first_token = currCmd.substr(0, currCmd.find(' '));
 
     if (first_token == insert_str) {
@@ -63,14 +64,25 @@ void processString(string const& currCmd) {
     } else if (first_token == search_str) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
         processSearch(cmdstr);
+
     } else if (first_token == q_max_str) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
-
         auto q_MaxRes = processQ_MAX(cmdstr);
+
         if (q_MaxRes == -1) 
-            cout << "failure" << endl;
+            cout << "failure" <<endl;
         else 
-            cout << "max " << q_MaxRes << endl;
+            cout << "max " << q_MaxRes <<endl;
+
+    } else if (first_token == q_min_str) {
+        string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
+        auto q_MinRes = processQ_MIN(cmdstr);
+
+        if (q_MinRes == numeric_limits<int>::max()) 
+            cout << "failure" <<endl;
+        else 
+            cout << "min " << q_MinRes <<endl;
+
     }
 }
 
@@ -106,7 +118,6 @@ int processQ_MAX(string const& currCmd) {
     string attribute = cmdList[3];
 
     TreeNode *refNode = root->findInTree(root, longitude, latitude);
-
     if (direction == "NE")
         refNode = refNode->NE;
     else if (direction == "NW")
@@ -118,13 +129,50 @@ int processQ_MAX(string const& currCmd) {
 
     if (attribute == "p") {
         int maxPopulation = -1;
-        root->findMaxPopulation(refNode, maxPopulation);        
-        return maxPopulation == -1 ? -1 : maxPopulation;
+        root->findMax(refNode, maxPopulation, attribute);        
+        return maxPopulation;
 
     } else if (attribute == "r") {
+        int maxCost = -1;
+        root->findMax(refNode, maxCost, attribute);
+        return maxCost;
 
     } else if (attribute == "s") {
+        int maxAvgSalary = -1;
+        root->findMax(refNode, maxAvgSalary, attribute);
+        return maxAvgSalary;
+    }
+}
 
+int processQ_MIN(string const& currCmd) {
+    auto cmdList = split(currCmd, ';');
+    double longitude = stod(cmdList[0]);
+    double latitude = stod(cmdList[1]);
+    string direction = cmdList[2];
+    string attribute = cmdList[3];
+
+    TreeNode *refNode = root->findInTree(root, longitude, latitude);
+    if (direction == "NE")
+        refNode = refNode->NE;
+    else if (direction == "NW")
+        refNode = refNode->NW;
+    else if (direction == "SW")
+        refNode = refNode->SW;
+    else if (direction == "SE")
+        refNode = refNode->SE;
+
+    if (attribute == "p") {
+        int minPopulation = numeric_limits<int>::max();
+        root->findMin(refNode, minPopulation, attribute);        
+        return minPopulation;
+    } else if (attribute == "r") {
+        int minCost = numeric_limits<int>::max();
+        root->findMin(refNode, minCost, attribute);
+        return minCost;
+    } else if (attribute == "s") {
+        int minAvgSalary = numeric_limits<int>::max();
+        root->findMin(refNode, minAvgSalary, attribute);
+        return minAvgSalary;
     }
 }
 

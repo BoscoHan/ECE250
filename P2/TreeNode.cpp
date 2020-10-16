@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <limits>
 #include "CityInfo.cpp"
 using namespace std;
 
@@ -101,17 +102,42 @@ class TreeNode {
         return nullptr;
     }
 
-    void findMaxPopulation(TreeNode *root, int &max){
+    void findMax(TreeNode *root, int &max, string const& attribute){
         if (root == nullptr) return;
 
-        findMaxPopulation(root->NE, max);
-        findMaxPopulation(root->NW, max);
+        findMax(root->NE, max, attribute);
+        findMax(root->NW, max, attribute);
 
-        if (root->info.population > max) {
+        if (attribute == "p" && root->info.population > max) 
             max = root->info.population;
-        }
-            
-        findMaxPopulation(root->SW, max);
-        findMaxPopulation(root->SE, max);
+                  
+        if (attribute == "r" && root->info.costOfLiving > max) 
+            max = root->info.costOfLiving;
+
+        if (attribute == "s" && root->info.avgSalary > max) 
+            max = root->info.avgSalary;
+
+        findMax(root->SW, max, attribute);
+        findMax(root->SE, max, attribute);
+    }
+
+
+    void findMin(TreeNode *root, int &min, string const& attribute) {
+        if (root == nullptr) return;
+
+        findMin(root->NE, min, attribute);
+        findMin(root->NW, min, attribute);
+        
+        if (attribute == "p" && root->info.population < min) 
+            min = root->info.population;
+
+        if (attribute == "r" && root->info.costOfLiving < min) 
+            min = root->info.costOfLiving;
+
+        if (attribute == "s" && root->info.avgSalary < min) 
+            min = root->info.avgSalary;
+
+        findMin(root->SW, min, attribute);
+        findMin(root->SE, min, attribute);
     }
 };
