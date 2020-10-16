@@ -12,12 +12,14 @@ using namespace std;
 void processString(std::string const& cmd);
 bool processInsertion(string const& currCmd);
 void processSearch(string const& currCmd);
+int processQ_MAX(string const& currCmd);
 vector<string> split(const std::string &str, char delim);
 
 const std::string insert_str = "i";
 const std::string size_str = "size";
 const std::string print_str = "print";
 const std::string search_str = "s";
+const std::string q_max_str = "q_max";
 
 TreeNode *root;
 
@@ -61,7 +63,15 @@ void processString(string const& currCmd) {
     } else if (first_token == search_str) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
         processSearch(cmdstr);
-    } 
+    } else if (first_token == q_max_str) {
+        string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
+
+        auto q_MaxRes = processQ_MAX(cmdstr);
+        if (q_MaxRes == -1) 
+            cout << "failure" << endl;
+        else 
+            cout << "max " << q_MaxRes << endl;
+    }
 }
 
 
@@ -87,15 +97,48 @@ bool processInsertion(string const& currCmd) {
     return !foundDuplciates[0]; //return true if no duplicates found  
 }
 
+
+int processQ_MAX(string const& currCmd) {
+    auto cmdList = split(currCmd, ';');
+    double longitude = stod(cmdList[0]);
+    double latitude = stod(cmdList[1]);
+    string direction = cmdList[2];
+    string attribute = cmdList[3];
+
+    TreeNode *refNode = root->findInTree(root, longitude, latitude);
+
+    if (direction == "NE")
+        refNode = refNode->NE;
+    else if (direction == "NW")
+        refNode = refNode->NW;
+    else if (direction == "SW")
+        refNode = refNode->SW;
+    else if (direction == "SE")
+        refNode = refNode->SE;
+
+    if (attribute == "p") {
+        int maxPopulation = -1;
+        root->findMaxPopulation(refNode, maxPopulation);        
+        return maxPopulation == -1 ? -1 : maxPopulation;
+
+    } else if (attribute == "r") {
+
+    } else if (attribute == "s") {
+
+    }
+}
+
 void processSearch(string const& currCmd) {
     auto cmdList = split(currCmd, ';');
     auto searchResult = root->findInTree(root, stod(cmdList[0]), stod(cmdList[1]));    
 
-    if (searchResult == "")
+    if (searchResult == nullptr)
         cout<< "not found" << endl;
     else
-        cout << "found " << searchResult << endl;
+        cout << "found " << searchResult->info.name << endl;
 }
+
+
 
 vector<string> split(const std::string &str, char delim) {
 	vector<string> result;

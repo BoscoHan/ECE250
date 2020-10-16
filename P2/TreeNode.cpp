@@ -5,14 +5,13 @@
 using namespace std;
 
 class TreeNode {
-    private:
-        CityInfo info;
-        TreeNode *NE;
-        TreeNode *NW;
-        TreeNode *SW;
-        TreeNode *SE;  
-
     public:
+    TreeNode *NE;
+    TreeNode *NW;
+    TreeNode *SW;
+    TreeNode *SE;  
+    CityInfo info;
+
     TreeNode(CityInfo _info) : 
         info(_info), NE(nullptr), NW(nullptr), SW(nullptr), SE(nullptr) {}
 
@@ -81,11 +80,11 @@ class TreeNode {
         printInorder(root->SE, list);
     }
 
-    string findInTree(TreeNode *root, double longitude, double latitude) {
-        if (root == nullptr) return "";
+    TreeNode* findInTree(TreeNode *root, double longitude, double latitude) {
+        if (root == nullptr) return nullptr;
 
         if (root->info.latitude == latitude && root->info.longitude == longitude) 
-            return root->info.name;
+            return root;
         
         if (longitude > root->info.longitude && latitude > root->info.latitude) 
             return findInTree(root->NE, longitude, latitude);
@@ -99,6 +98,20 @@ class TreeNode {
         if (longitude > root->info.longitude && latitude < root->info.latitude) 
             return findInTree(root->SE, longitude, latitude);
         
-        return "";
+        return nullptr;
+    }
+
+    void findMaxPopulation(TreeNode *root, int &max){
+        if (root == nullptr) return;
+
+        findMaxPopulation(root->NE, max);
+        findMaxPopulation(root->NW, max);
+
+        if (root->info.population > max) {
+            max = root->info.population;
+        }
+            
+        findMaxPopulation(root->SW, max);
+        findMaxPopulation(root->SE, max);
     }
 };
