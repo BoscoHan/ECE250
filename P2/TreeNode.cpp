@@ -165,7 +165,7 @@ class TreeNode {
         clearAllNodes(root->NW);
         clearAllNodes(root->SE);
         clearAllNodes(root->SW);
-        delete root;
         root = nullptr;
+        delete root;
     }
 };

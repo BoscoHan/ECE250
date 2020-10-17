@@ -103,8 +103,8 @@ void processString(string const& currCmd) {
 
     } else if (first_token == clear_str) {
         root->clearAllNodes(root);
-        delete root;
         root = nullptr;
+        delete root;
         cout<< "success" <<endl;
     }
 }
