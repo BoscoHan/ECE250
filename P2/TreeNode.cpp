@@ -28,41 +28,38 @@ class TreeNode {
         cout << node->info.avgSalary <<endl;
     }
 
-        //lat = y, long = x
+    //lat = y, long = x
     TreeNode* insertNode(TreeNode *root, CityInfo *info, bool foundDuplicates[]) {               
         if (root == NULL) 
             return new TreeNode(*info);
         
         if (root->info.latitude == info->latitude && root->info.longitude == info->longitude) 
-        {
             foundDuplicates[0] = true;
-            return nullptr;
-        }
+        
             
         //insert to NE:
-        if (info->longitude > root->info.longitude && info->latitude > root->info.latitude) {
+        if (info->longitude >= root->info.longitude && info->latitude > root->info.latitude) {
             // cout << "NE" <<endl;
             root->NE = insertNode(root->NE, info, foundDuplicates);
         }
 
         //insert to NW
-        if (info->longitude < root->info.longitude && info->latitude > root->info.latitude) {
+        if (info->longitude < root->info.longitude && info->latitude >= root->info.latitude) {
             // cout << "NW" <<endl;
             root->NW = insertNode(root->NW, info, foundDuplicates);
         }
 
         //insert to SW
-        if (info->longitude < root->info.longitude && info->latitude < root->info.latitude) {
+        if (info->longitude <= root->info.longitude && info->latitude < root->info.latitude) {
             // cout << "SW" <<endl;
             root->SW = insertNode(root->SW, info, foundDuplicates);
         }
 
         //insert to SE
-        if (info->longitude > root->info.longitude && info->latitude < root->info.latitude) {
+        if (info->longitude > root->info.longitude && info->latitude <= root->info.latitude) {
             // cout << "SE" <<endl;
             root->SE = insertNode(root->SE, info, foundDuplicates);
         }
-        
         return root;
     }
 
@@ -139,5 +136,36 @@ class TreeNode {
 
         findMin(root->SW, min, attribute);
         findMin(root->SE, min, attribute);
+    }
+
+    void findTotal(TreeNode *root, int &total, string const& attribute) {
+        if (root == nullptr) return;
+
+        findTotal(root->NE, total, attribute);
+        findTotal(root->NW, total, attribute);
+
+        if (attribute == "p") 
+            total += root->info.population;
+                  
+        if (attribute == "r") 
+            total += root->info.costOfLiving;
+
+        if (attribute == "s") 
+            total += root->info.avgSalary;
+
+        findTotal(root->SW, total, attribute);
+        findTotal(root->SE, total, attribute);
+    }
+
+    //post order traversal, delete all allocated nodes
+    void clearAllNodes(TreeNode *root) {
+        if (root == nullptr) return;
+
+        clearAllNodes(root->NE);
+        clearAllNodes(root->NW);
+        clearAllNodes(root->SE);
+        clearAllNodes(root->SW);
+        delete root;
+        root = nullptr;
     }
 };
