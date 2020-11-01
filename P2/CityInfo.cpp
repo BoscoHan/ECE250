@@ -10,9 +10,9 @@ class CityInfo {
     double longitude;
     double latitude;
     int population;
-    int costOfLiving;
-    int avgSalary;
-    CityInfo(string _name, double _longitude, double _latitude, int _population, int _costOfLiving, int _avgSalary) {
+    double costOfLiving;
+    double avgSalary;
+    CityInfo(string _name, double _longitude, double _latitude, int _population, double _costOfLiving, double _avgSalary) {
         name = _name;
         longitude = _longitude;
         latitude = _latitude;

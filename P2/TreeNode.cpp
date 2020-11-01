@@ -99,7 +99,7 @@ class TreeNode {
         return nullptr;
     }
 
-    void findMax(TreeNode *root, int &max, string const& attribute){
+    void findMax(TreeNode *root, double &max, string const& attribute){
         if (root == nullptr) return;
 
         findMax(root->NE, max, attribute);
@@ -119,7 +119,7 @@ class TreeNode {
     }
 
 
-    void findMin(TreeNode *root, int &min, string const& attribute) {
+    void findMin(TreeNode *root, double &min, string const& attribute) {
         if (root == nullptr) return;
 
         findMin(root->NE, min, attribute);
@@ -138,7 +138,7 @@ class TreeNode {
         findMin(root->SE, min, attribute);
     }
 
-    void findTotal(TreeNode *root, int &total, string const& attribute) {
+    void findTotal(TreeNode *root, double &total, string const& attribute) {
         if (root == nullptr) return;
 
         findTotal(root->NE, total, attribute);

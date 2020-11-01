@@ -6,15 +6,16 @@
 #include <iterator>
 #include <string.h>
 #include <limits>
+#include<iomanip>
 #include "TreeNode.cpp"
 using namespace std;
 
 void processString(std::string const& cmd);
 bool processInsertion(string const& currCmd);
 void processSearch(string const& currCmd);
-int processQ_MAX(string const& currCmd);
-int processQ_MIN(string const& currCmd);
-int processQ_Total(string const& currCmd);
+double processQ_MAX(string const& currCmd);
+double processQ_MIN(string const& currCmd);
+double processQ_Total(string const& currCmd);
 vector<string> split(const std::string &str, char delim);
 
 const std::string insert_str = "i";
@@ -78,29 +79,41 @@ void processString(string const& currCmd) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
         auto q_MaxRes = processQ_MAX(cmdstr);
 
-        if (q_MaxRes == -1) 
+        if (q_MaxRes == -1.0) 
             cout << "failure" <<endl;
-        else 
-            cout << "max " << q_MaxRes <<endl;
+        else {
+            if (split(cmdstr, ';').at(3) == "p") {
+                cout<< "max "<< std::fixed <<std::setprecision(0) << q_MaxRes<< std::endl;
+            } else 
+                cout<< "max "<< std::fixed <<std::setprecision(2) << q_MaxRes<< std::endl;
+        }
 
     } else if (first_token == q_min_str) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
         auto q_MinRes = processQ_MIN(cmdstr);
 
-        if (q_MinRes == numeric_limits<int>::max()) 
+        if (q_MinRes == numeric_limits<double>::max()) {
             cout << "failure" <<endl;
-        else 
-            cout << "min " << q_MinRes <<endl;
+        }
+        else {
+            if (split(cmdstr, ';').at(3) == "p") {
+                cout<< "min "<< std::fixed <<std::setprecision(0) << q_MinRes<< std::endl;
+            } else 
+                cout<< "min "<< std::fixed <<std::setprecision(2) << q_MinRes<< std::endl;
+        }
 
     } else if (first_token == q_total_str) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
         auto q_TotalRes = processQ_Total(cmdstr);
 
-        if (q_TotalRes == 0)
+        if (q_TotalRes == 0.0)
             cout << "failure" <<endl;
-        else
-            cout<< "total " << q_TotalRes <<endl;
-
+        else {
+            if (split(cmdstr, ';').at(3) == "p") {
+                cout<< "total "<< std::fixed <<std::setprecision(0) << q_TotalRes<< std::endl;
+            } else 
+                cout<< "total "<< std::fixed <<std::setprecision(2) << q_TotalRes<< std::endl;
+        }
     } else if (first_token == clear_str) {
         root->clearAllNodes(root);
         root = nullptr;
@@ -116,8 +129,8 @@ bool processInsertion(string const& currCmd) {
     double longitude = stod(cmdList[1]);
     double latitude = stod(cmdList[2]);
     int population = stoi(cmdList[3]);
-    int livingCost = stoi(cmdList[4]);
-    int avgSalary = stoi(cmdList[5]);
+    double livingCost = stoi(cmdList[4]);
+    double avgSalary = stod(cmdList[5]);
     CityInfo* info = new CityInfo(city_name, longitude, latitude, population, livingCost, avgSalary);
 
     if (root == NULL) {
@@ -132,7 +145,7 @@ bool processInsertion(string const& currCmd) {
 }
 
 
-int processQ_MAX(string const& currCmd) {
+double processQ_MAX(string const& currCmd) {
     auto cmdList = split(currCmd, ';');
     double longitude = stod(cmdList[0]);
     double latitude = stod(cmdList[1]);
@@ -150,23 +163,23 @@ int processQ_MAX(string const& currCmd) {
         refNode = refNode->SE;
 
     if (attribute == "p") {
-        int maxPopulation = -1;
+        double maxPopulation = -1.0;
         root->findMax(refNode, maxPopulation, attribute);        
         return maxPopulation;
 
     } else if (attribute == "r") {
-        int maxCost = -1;
+        double maxCost = -1.0;
         root->findMax(refNode, maxCost, attribute);
         return maxCost;
 
     } else if (attribute == "s") {
-        int maxAvgSalary = -1;
+        double maxAvgSalary = -1.0;
         root->findMax(refNode, maxAvgSalary, attribute);
         return maxAvgSalary;
     }
 }
 
-int processQ_MIN(string const& currCmd) {
+double processQ_MIN(string const& currCmd) {
     auto cmdList = split(currCmd, ';');
     double longitude = stod(cmdList[0]);
     double latitude = stod(cmdList[1]);
@@ -184,21 +197,21 @@ int processQ_MIN(string const& currCmd) {
         refNode = refNode->SE;
 
     if (attribute == "p") {
-        int minPopulation = numeric_limits<int>::max();
+        double minPopulation = numeric_limits<double>::max();
         root->findMin(refNode, minPopulation, attribute);        
         return minPopulation;
     } else if (attribute == "r") {
-        int minCost = numeric_limits<int>::max();
+        double minCost = numeric_limits<double>::max();
         root->findMin(refNode, minCost, attribute);
         return minCost;
     } else if (attribute == "s") {
-        int minAvgSalary = numeric_limits<int>::max();
+        double minAvgSalary = numeric_limits<double>::max();
         root->findMin(refNode, minAvgSalary, attribute);
         return minAvgSalary;
     }
 }
 
-int processQ_Total(string const& currCmd) {
+double processQ_Total(string const& currCmd) {
     auto cmdList = split(currCmd, ';');
     double longitude = stod(cmdList[0]);
     double latitude = stod(cmdList[1]);
@@ -216,15 +229,15 @@ int processQ_Total(string const& currCmd) {
         refNode = refNode->SE;
 
     if (attribute == "p") {
-        int totalPopulation = 0;
+        double totalPopulation = 0.0;
         root->findTotal(refNode, totalPopulation, attribute);
         return totalPopulation;
     } else if (attribute == "r") {
-        int totalCost = 0;
+        double totalCost = 0.0;
         root->findTotal(refNode, totalCost, attribute);
         return totalCost;
     } else if (attribute == "s") {
-        int totalAvgSalary = 0;
+        double totalAvgSalary = 0.0;
         root->findTotal(refNode, totalAvgSalary, attribute);
         return totalAvgSalary;
     }
