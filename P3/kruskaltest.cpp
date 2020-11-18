@@ -12,6 +12,8 @@ using namespace std;
 
 const std::string n_str = "n";
 const std::string i_str = "i";
+const std::string edgeCount_str = "edge_count";
+const std::string mst_str = "mst";
 
 void processString(std::string const& cmd);
 void processN(string const& param);
@@ -32,8 +34,8 @@ int main()
         getline(cin, cmdline);
         processString(cmdline);
     }
-    _ds->printDsuf();
-    _ds->printAdjList();
+    //_ds->printDsuf();
+    //_ds->printList(_ds->adjList);
     delete _ds;
     return 0;
 }
@@ -49,8 +51,16 @@ void processString(string const& currCmd) {
 
 	} else if (first_token == i_str) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size());
-        
         processI(cmdstr);
+
+    } else if (first_token == edgeCount_str) {
+        //+1 to account for 0 based counting:
+        cout << "edge count is " << _ds-> getE()+1 << endl;
+
+    } else if (first_token == mst_str) {
+        _ds->kruskal();
+
+        _ds->printList(_ds->mst);
     }
 }
 

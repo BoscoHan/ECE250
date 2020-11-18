@@ -25,6 +25,7 @@ public:
     
     vector<node> dsuf;
     vector<Edge> adjList;
+    vector<Edge> mst; //holds the min spanning tree
 
     // maps encoded "src+dest" as key to weight
     // map<string, int> map; 
@@ -45,7 +46,6 @@ public:
     int getV() {
         return V;
     }
-
     int getE() {
         return V;
     }
@@ -66,8 +66,23 @@ public:
             return e1.weight < e2.weight;
         });
 
+        int vertices = 0, edges = 0;
+        while (vertices < V-1 && edges < E) {
+            /*union find*/
+            //find absolute src and destination           
+            int absSrc = find(adjList[edges].src);
+            int absDest = find(adjList[edges].dst);
 
+            //if absSrc == absDest, they're in the same set, adding an edge will form cycle
+            if (absSrc == absDest) {
+                edges++;
+                continue;
+            }
 
+            union_set(absSrc, absDest);
+            mst.push_back(adjList[edges]);
+            vertices++;
+        }        
     }
 
     int find(int v)
@@ -75,6 +90,23 @@ public:
         if(dsuf[v].parent==-1)
             return v;
         return dsuf[v].parent=find(dsuf[v].parent);	//using path compression
+    }
+
+    void union_set(int absSrc,int absDest)
+    {
+        //UNION by RANK
+        if(dsuf[absSrc].rank > dsuf[absDest].rank)	//if src has higher rank
+            dsuf[absDest].parent = absSrc;
+
+        else if(dsuf[absSrc].rank < dsuf[absDest].rank)	//toP has higher rank
+            dsuf[absSrc].parent = absDest;
+
+        else
+        {
+            //if Both have same rank then anyone can be made as parent
+            dsuf[absSrc].parent = absDest;
+            dsuf[absDest].rank +=1;	//parent's rank++
+        }
     }
 
     void addWeightedEdge (int from, int to, int weight) {
@@ -92,18 +124,9 @@ public:
             cout << n.parent << " " << n.rank <<endl;
     }
 
-    void printAdjList() {
-        for (auto e : adjList) 
+    void printList(vector<Edge> &list) {
+        for (auto e : list) 
             cout << e.src <<"-"<< e.dst <<":"<< e.weight <<endl;
     }
     
-    // void printMap() {
-    //     for (auto const& entry : map)
-    //     {
-    //         std::cout << entry.first  // key
-    //                 << ':' 
-    //                 << entry.second // value
-    //                 << std::endl ;
-    //     }
-    // }
 };
