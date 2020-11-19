@@ -1,5 +1,5 @@
 #include <string>
-#include <sstream>
+#include <stdlib.h> 
 #include <vector>
 #include <string.h>
 #include <iostream>
@@ -32,6 +32,7 @@ public:
 
     DisjointSet (int vertices) {
         this->V = vertices;
+        this->E = 0;
         dsuf.clear();
         adjList.clear();
 
@@ -47,7 +48,10 @@ public:
         return V;
     }
     int getE() {
-        return V;
+        return E;
+    }
+    void setE(int edge) {
+        E = edge;
     }
 
     // void buildMap(int from, int to, int weight) {
@@ -128,5 +132,38 @@ public:
         for (auto e : list) 
             cout << e.src <<"-"<< e.dst <<":"<< e.weight <<endl;
     }
-    
+
+    bool deleteEdge (int from, int to) {
+        auto old_size = adjList.size();
+
+        auto new_end = adjList.erase(std::remove_if( adjList.begin(), adjList.end(),
+            [&from, &to](const Edge& e) { 
+                return (from == e.src && to == e.dst) || (from == e.dst && to == e.src);      
+            }), adjList.end());
+
+        adjList.erase(new_end, adjList.end()); //actually erasing them here: removeIf doesn't erase elements
+        
+        auto new_size = adjList.size();
+        int deletions = old_size - new_size;
+        
+        this->E -= deletions;
+        //cout << adjList.size() << " < adj size " <<endl;
+        return deletions > 0;
+    }
+
+    double getMSTWeight(vector<Edge> &list) {
+        double weight = 0.0;
+        for (auto e : list) 
+            weight += e.weight;
+        return weight;
+    }  
+
+    int degreeOfVertex(int v) {
+        int degree = 0;
+        for (auto e : adjList) {
+            if (e.src == v || e.dst == v)
+                degree++;
+        }
+        return degree;
+    }  
 };
