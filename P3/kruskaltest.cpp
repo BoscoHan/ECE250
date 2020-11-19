@@ -23,6 +23,7 @@ void processN(string const& param);
 void processI(string const& currCmd);
 void processDelete(string const& currCmd);
 void processDegree(string const& param);
+bool graphConnected();
 double processQ_MAX(string const& currCmd);
 vector<string> split(const std::string &str, char delim);
 
@@ -40,7 +41,7 @@ int main()
         processString(cmdline);
     }
     //_ds->printDsuf();
-    //_ds->printList(_ds->adjList);
+    //_ds->printList(_ds->adjEdgeList);
     _ds = nullptr;
     delete _ds;
     return 0;
@@ -64,13 +65,15 @@ void processString(string const& currCmd) {
         cout << "edge count is " << _ds-> getE() << endl;
 
     } else if (first_token == mst_str) {
-        _ds->kruskal();
+        if (!graphConnected()) {
+            cout << "not connected" <<endl;
+            return;
+        }
 
-        //_ds->printList(_ds->mst);
+        _ds->kruskal();
         auto weight = _ds->getMSTWeight(_ds->mst);
         cout << "mst " << fixed <<std::setprecision(2) << weight << endl;
 
-        //TODO: find out how is graph disconnected
     } else if (first_token == degree_str) {
         string cmdstr = currCmd.substr(currCmd.find(' ')+1, currCmd.size()); //strip first token char
         processDegree(cmdstr);
@@ -80,8 +83,21 @@ void processString(string const& currCmd) {
         processDelete(cmdstr);
         
     } else if (first_token == clear_str) {
-
+        _ds->clearGraph();
+        cout << "success" <<endl;
     }
+}
+
+bool graphConnected() {
+    auto v = _ds->getV();
+    vector<bool> visited(v, false);
+
+    _ds->BFS(v, visited);
+    for (auto x : visited) {
+        if (!x) 
+            return false;
+    }
+    return true;
 }
 
 void processDelete(string const& currCmd) {
@@ -128,7 +144,7 @@ void processI(string const& currCmd) {
 
     int from = stoi(cmdList[0]);
     int to = stoi(cmdList[1]);
-    int weight = stoi(cmdList[2]);
+    double weight = stod(cmdList[2]);
 
     if (to < 0 || from < 0 || to > _ds->getV() || from > _ds->getV() || weight <= 0) {
         cout << "invalid argument" <<endl;
